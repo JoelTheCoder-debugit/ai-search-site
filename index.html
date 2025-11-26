@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Scanner AI</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; color:white; padding:20px; }
+    h1 { text-align:center; }
+    .box { max-width:700px; margin:0 auto; background:#1c1c1c; padding:20px; border-radius:10px; }
+    input, textarea, button { width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none; }
+    button { background:#4caf50; color:white; cursor:pointer; }
+    button:hover { background:#45a049; }
+    #output { white-space:pre-wrap; margin-top:20px; }
+  </style>
+</head>
+<body>
+  <h1>Web Scanner + Paraphraser</h1>
+  <div class="box">
+    <p><b>⚠️ IMPORTANT:</b> Neocities is static-only. You MUST NOT put your OpenAI API key in this file or it will be public. You need a backend (Cloudflare Worker / server) to keep your key safe.<br><br>This site is already wired to call <code>/api/query</code>. All you need is a small backend that proxies your request securely.</p>
+
+    <input id="query" placeholder="Ask something..." />
+    <button onclick="run()">Search + Paraphrase</button>
+
+    <div id="output"></div>
+  </div>
+
+<script>
+async function run() {
+  const q = document.getElementById("query").value;
+  const out = document.getElementById("output");
+  out.textContent = "Working...";
+
+  try {
+    const res = await fetch("/api/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: q })
+    });
+
+    const data = await res.json();
+    out.textContent = data.answer || "No response.";
+  } catch (e) {
+    out.textContent = "Error: " + e.toString();
+  }
+}
+</script>
+
+</body>
+</html>
