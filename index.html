@@ -33,15 +33,15 @@ async function sendMessage() {
   const userMessage = input.value.trim();
   if(!userMessage) return;
 
-  // display user message
+  // Display user message
   appendMessage(userMessage, 'user');
   input.value = '';
 
   try {
-    // call Worker
-    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", {
+    // Call Worker backend
+    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", {  // Replace with your deployed Worker URL
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: userMessage })
     });
     const data = await res.json();
