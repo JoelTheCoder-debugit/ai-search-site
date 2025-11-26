@@ -32,7 +32,7 @@ async function run() {
   out.textContent = "Working...";
 
   try {
-    const res = await fetch("/api/query", {
+    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: q })
