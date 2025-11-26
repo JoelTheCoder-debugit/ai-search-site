@@ -86,6 +86,10 @@ button:hover {
 <script>
 const chat = document.getElementById('chat');
 
+// Ask user for personality once
+let personality = prompt("Enter a personality for the AI:", "You are a helpful assistant.");
+if (!personality) personality = "You are a helpful assistant.";
+
 // Append message to chat
 function appendMessage(text, type) {
   const div = document.createElement('div');
@@ -105,7 +109,7 @@ async function sendMessage() {
   appendMessage(userMessage, 'user');
   input.value = '';
 
-  // Typing dots animation
+  // Typing dots
   const typingDiv = appendMessage("Typing", 'ai');
   let dots = 0;
   const typingInterval = setInterval(() => {
@@ -118,7 +122,7 @@ async function sendMessage() {
     const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", { // replace with your Worker URL
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: userMessage, session: "basic-session" })
+      body: JSON.stringify({ query: userMessage, personality: personality })
     });
 
     const data = await res.json();
