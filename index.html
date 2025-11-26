@@ -121,7 +121,6 @@ function updatePersonality() {
   const input = document.getElementById('personality');
   if (input.value.trim() !== "") {
     personality = input.value.trim();
-    appendMessage("AI personality updated!", "ai");
     input.value = "";
   }
 }
