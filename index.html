@@ -71,34 +71,11 @@ button {
 button:hover {
   background: #ccc;
 }
-#controls {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-#controls button {
-  width: 80px;
-  padding: 8px;
-  font-size: 14px;
-  background: #fff;
-  color: #000;
-  margin-left: 0;
-}
-#controls button:hover {
-  background: #ccc;
-}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div id="controls">
-    <button onclick="saveSession()">Save</button>
-    <button onclick="loadSession()">Load</button>
-  </div>
   <div id="chat"></div>
   <div class="input-area">
     <input id="query" placeholder="Type your message..." />
@@ -108,49 +85,6 @@ button:hover {
 
 <script>
 const chat = document.getElementById('chat');
-
-// Generate a random session ID if none exists
-let sessionId = localStorage.getItem("sessionId");
-if (!sessionId) {
-  sessionId = Math.floor(Math.random() * 1000000000);
-  localStorage.setItem("sessionId", sessionId);
-}
-
-// Send message to Worker
-async function sendMessage() {
-  const input = document.getElementById('query');
-  const userMessage = input.value.trim();
-  if (!userMessage) return;
-
-  appendMessage(userMessage, 'user');
-  input.value = '';
-
-  // Typing dots
-  const typingDiv = appendMessage("Typing", 'ai');
-  let dots = 0;
-  const typingInterval = setInterval(() => {
-    dots = (dots + 1) % 4;
-    typingDiv.textContent = "Typing" + ".".repeat(dots);
-    chat.scrollTop = chat.scrollHeight;
-  }, 500);
-
-  try {
-    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: userMessage, session: sessionId })
-    });
-
-    const data = await res.json();
-    clearInterval(typingInterval);
-    typingDiv.textContent = data.answer;
-    chat.scrollTop = chat.scrollHeight;
-
-  } catch (err) {
-    clearInterval(typingInterval);
-    typingDiv.textContent = "Error: " + err.toString();
-  }
-}
 
 // Append message to chat
 function appendMessage(text, type) {
@@ -162,24 +96,39 @@ function appendMessage(text, type) {
   return div;
 }
 
-// Save current session ID for later
-function saveSession() {
-  const saved = prompt("Enter a number to save this conversation:");
-  if (saved) {
-    localStorage.setItem("savedSession", sessionId);
-    alert("Conversation saved! Use Load to restore.");
-  }
-}
+// Send message to Worker
+async function sendMessage() {
+  const input = document.getElementById('query');
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
 
-// Load saved session
-function loadSession() {
-  const saved = localStorage.getItem("savedSession");
-  if (saved) {
-    sessionId = saved;
-    alert("Loaded saved conversation!");
-    chat.innerHTML = "";
-  } else {
-    alert("No saved conversation found.");
+  appendMessage(userMessage, 'user');
+  input.value = '';
+
+  // Typing dots animation
+  const typingDiv = appendMessage("Typing", 'ai');
+  let dots = 0;
+  const typingInterval = setInterval(() => {
+    dots = (dots + 1) % 4;
+    typingDiv.textContent = "Typing" + ".".repeat(dots);
+    chat.scrollTop = chat.scrollHeight;
+  }, 500);
+
+  try {
+    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", { // replace with your Worker URL
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: userMessage, session: "basic-session" })
+    });
+
+    const data = await res.json();
+    clearInterval(typingInterval);
+    typingDiv.textContent = data.answer;
+    chat.scrollTop = chat.scrollHeight;
+
+  } catch (err) {
+    clearInterval(typingInterval);
+    typingDiv.textContent = "Error: " + err.toString();
   }
 }
 </script>
