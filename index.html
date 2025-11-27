@@ -23,30 +23,6 @@ body {
   background: #111;
   padding: 10px;
 }
-#personality-area {
-  display: flex;
-  margin-bottom: 10px;
-  gap: 10px;
-}
-#personality-area input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  background: #222;
-  color: #fff;
-}
-#personality-area button {
-  padding: 10px;
-  border: none;
-  background: #fff;
-  color: #000;
-  cursor: pointer;
-  font-size: 16px;
-}
-#personality-area button:hover {
-  background: #ccc;
-}
 #chat {
   flex: 1;
   overflow-y: auto;
@@ -74,7 +50,7 @@ body {
   display: flex;
   margin-top: 10px;
 }
-input.chat-input {
+input {
   flex: 1;
   padding: 15px;
   border: none;
@@ -82,7 +58,7 @@ input.chat-input {
   color: #fff;
   font-size: 16px;
 }
-button.chat-send {
+button {
   width: 100px;
   padding: 15px;
   border: none;
@@ -92,7 +68,7 @@ button.chat-send {
   font-size: 16px;
   margin-left: 10px;
 }
-button.chat-send:hover {
+button:hover {
   background: #ccc;
 }
 </style>
@@ -100,30 +76,15 @@ button.chat-send:hover {
 <body>
 
 <div class="container">
-  <div id="personality-area">
-    <input id="personality" placeholder="Set AI personality..." />
-    <button onclick="updatePersonality()">Set</button>
-  </div>
-
   <div id="chat"></div>
   <div class="input-area">
-    <input id="query" class="chat-input" placeholder="Type your message..." />
-    <button class="chat-send" onclick="sendMessage()">Send</button>
+    <input id="query" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
 </div>
 
 <script>
 const chat = document.getElementById('chat');
-let personality = "You are a helpful assistant."; // default
-
-// Update personality from input box
-function updatePersonality() {
-  const input = document.getElementById('personality');
-  if (input.value.trim() !== "") {
-    personality = input.value.trim();
-    input.value = "";
-  }
-}
 
 // Append message to chat
 function appendMessage(text, type) {
@@ -154,10 +115,10 @@ async function sendMessage() {
   }, 500);
 
   try {
-    const res = await fetch("https://morning-mud-34ab.joelrobinson-fit.workers.dev/", { // replace with your Worker URL
+    const res = await fetch("YOUR_WORKER_URL", { // replace with your Worker URL
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: userMessage, personality: personality })
+      body: JSON.stringify({ query: userMessage, session: "basic-session" })
     });
 
     const data = await res.json();
